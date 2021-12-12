@@ -2,9 +2,9 @@
 
 namespace Lab1{
     public class SkipListLockFree<T>{
-        private readonly Node<T> _head = new(int.MinValue, default(T));
+        private readonly Node<T> _head = new(int.MinValue);
 
-        private readonly Node<T> _tail = new(int.MaxValue, default(T));
+        private readonly Node<T> _tail = new(int.MaxValue);
 
         public Node<T> Head => _head;
         public Node<T> Tail => _tail;
