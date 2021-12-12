@@ -5,11 +5,12 @@ using System.Threading;
 
 namespace Lab1{
     internal sealed class CollectionReadWritePerformance{
-        private const int MAX_VALUE = 100000000;
+        private const int MAX_VALUE = 10000;
         private readonly SkipListLockFree<int> _target;
         private readonly Thread[] _threads;
         private readonly int _iterations;
         private readonly Random rand = new Random();
+        public List<Node<int>> SavedValue{ get; } = new List<Node<int>>();
 
         public CollectionReadWritePerformance(SkipListLockFree<int> target, int readersCount, int writersCount, int iterations){
             _target = target;
@@ -42,6 +43,7 @@ namespace Lab1{
                 for (var i = 0; i < _iterations; i++){
                     var random = rand.Next(MAX_VALUE);
                     var node = new Node<int>(random, i);
+                    SavedValue.Add(node);
                     _target.Insert(node);
                 }
             }
