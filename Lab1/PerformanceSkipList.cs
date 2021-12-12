@@ -3,14 +3,14 @@
 namespace Lab1;
 
 [TestFixture]
-public class Performance{
+public class PerformanceSkipList{
     [Test]
     public void ConcurrentReadWritePerformance(){
         const int count = 1;
         var times = new int[count];
         for (var i = 0; i < count; i++){
             var list = new SkipListLockFree<int>();
-            var t = new CollectionReadWritePerformance(list, 10, 3, 5);
+            var t = new CollectionReadWritePerformanceSkipList(list, 10, 3, 5);
             times[i] = t.Run().Milliseconds;
             PrintSkipListForm(list);
             foreach (var node in t.SavedValue){

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 
 namespace Lab1{
-    internal sealed class CollectionReadWritePerformance{
+    internal sealed class CollectionReadWritePerformanceSkipList{
         private const int MAX_VALUE = 10000;
         private readonly SkipListLockFree<int> _target;
         private readonly Thread[] _threads;
@@ -12,7 +12,7 @@ namespace Lab1{
         private readonly Random rand = new Random();
         public SynchronizedCollection<Node<int>> SavedValue{ get; } = new SynchronizedCollection<Node<int>>();
 
-        public CollectionReadWritePerformance(SkipListLockFree<int> target, int readersCount, int writersCount, int iterations){
+        public CollectionReadWritePerformanceSkipList(SkipListLockFree<int> target, int readersCount, int writersCount, int iterations){
             _target = target;
             _iterations = iterations;
             var count = writersCount + readersCount;
