@@ -13,11 +13,10 @@ public class Performance{
             var t = new CollectionReadWritePerformance(list, 10, 3, 5);
             times[i] = t.Run().Milliseconds;
             PrintSkipListForm(list);
-            // Parallel.ForEach(t.SavedValue, (node) =>
-            // {
-            //     list.Delete(node);
-            // });
-            t.SavedValue.ForEach(node =>
+            foreach (var node in t.SavedValue){
+                Console.WriteLine(node.NodeValue.Value);
+            }
+            Parallel.ForEach(t.SavedValue, (node) =>
             {
                 list.Delete(node);
             });
@@ -27,18 +26,6 @@ public class Performance{
         Console.WriteLine("Avg: {0}, Min: {1}, Max: {2}", times.Average(), times.Min(), times.Max());
         Console.WriteLine(string.Join(" ", times));
     }
-
-    [Test]
-    public void Population(){
-        var target = new SkipListLockFree<int>();
-        for (int i = 0; i < 10000; i++){
-            var node = new Node<int>(i, i);
-            target.Insert(node);
-        }
-
-        // PrintSkipListForm(target);
-    }
-
     private static void PrintSkipListForm<T>(SkipListLockFree<T> target) where T : IComparable<T>{
         for (int i = Config.MaxLevel; i >= 0; i--){
             Console.Write("{0:00}|", i);

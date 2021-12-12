@@ -10,7 +10,7 @@ namespace Lab1{
         private readonly Thread[] _threads;
         private readonly int _iterations;
         private readonly Random rand = new Random();
-        public List<Node<int>> SavedValue{ get; } = new List<Node<int>>();
+        public SynchronizedCollection<Node<int>> SavedValue{ get; } = new SynchronizedCollection<Node<int>>();
 
         public CollectionReadWritePerformance(SkipListLockFree<int> target, int readersCount, int writersCount, int iterations){
             _target = target;

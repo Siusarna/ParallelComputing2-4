@@ -1,4 +1,5 @@
-﻿using Lab1.Utils;
+﻿using System.ServiceModel;
+using Lab1.Utils;
 
 namespace Lab1{
     public class SkipListLockFree<T>{
@@ -119,22 +120,15 @@ namespace Lab1{
                 return RemoveSucc(succ, node, succs, preds, ref marked);
             }
         }
-
-        private void OnFind(int level, ref bool marked, Node<T> curr, Node<T> pred, Node<T> node, bool isRetryNeeded){
+        private void OnFind(int level, ref bool marked, ref Node<T> curr, ref Node<T> pred, Node<T> node, bool isRetryNeeded){
             while (true){
                 var succ = curr.Next[level].Get(ref marked);
                 while (marked){
                     if (!IsComparedAndExchanged(pred, level, succ, curr)){
-                        isRetryNeeded = true;
-                        break;
+                        throw new IsComparedNotFoundException("Not Found");
                     }
                     curr = pred.Next[level].Value;
                     succ = curr.Next[level].Get(ref marked);
-                }
-
-                if (isRetryNeeded){
-                    isRetryNeeded = false;
-                    continue;
                 }
 
                 if (curr.NodeKey < node.NodeKey){
@@ -153,17 +147,22 @@ namespace Lab1{
             Node<T> curr = null;
 
             while (true){
-                var pred = _head;
-                for (var level = Config.MaxLevel; level >= Config.MinLevel; level--){
-                    curr = pred.Next[level].Value;
-                    
-                    OnFind(level, ref marked, curr, pred, node, isRetryNeeded);
-                    
-                    preds[level] = pred;
-                    succs[level] = curr;
-                }
+                try{
+                    var pred = _head;
+                    for (var level = Config.MaxLevel; level >= Config.MinLevel; level--){
+                        curr = pred.Next[level].Value;
 
-                return curr != null && (curr.NodeKey == node.NodeKey);
+                        OnFind(level, ref marked, ref curr, ref pred, node, isRetryNeeded);
+
+                        preds[level] = pred;
+                        succs[level] = curr;
+                    }
+
+                    return curr != null && (curr.NodeKey == node.NodeKey);
+                }
+                catch{
+                    continue;
+                }
             }
         }
     }
