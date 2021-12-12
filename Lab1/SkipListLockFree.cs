@@ -2,9 +2,12 @@
 
 namespace Lab1{
     public class SkipListLockFree<T>{
-        private readonly Node<T> _head = new(int.MinValue);
+        private readonly Node<T> _head = new(int.MinValue, default(T));
 
-        private readonly Node<T> _tail = new(int.MaxValue);
+        private readonly Node<T> _tail = new(int.MaxValue, default(T));
+
+        public Node<T> Head => _head;
+        public Node<T> Tail => _tail;
 
         public SkipListLockFree(){
             for (var i = 0; i < _head.Next.Length; ++i){
@@ -31,7 +34,7 @@ namespace Lab1{
         }
 
         private void IterateOverAllLevelsUp(Node<T> node, Node<T>[] preds, Node<T>[] succs){
-            for (var level = 1; level <= node.TopLevel; level++){
+            for (var level = Config.MinLevel + 1; level <= node.TopLevel; level++){
                 while (true){
                     var pred = preds[level];
                     var succ = succs[level];
@@ -49,10 +52,12 @@ namespace Lab1{
             var (succs, preds) = GetPredsAndSuccs();
 
             while (true){
+                Find(node, ref preds, ref succs);
+                
+                FillInNext(node, succs);
+                
                 var pred = preds[Config.MinLevel];
                 var succ = succs[Config.MinLevel];
-
-                FillInNext(node, succs);
 
                 node.Next[Config.MinLevel] = new MarkedReference<Node<T>>(succ, false);
 
@@ -142,7 +147,7 @@ namespace Lab1{
                 }           
             }
         }
-        private bool Find(Node<T> node, ref Node<T>[] preds, ref Node<T>[] succs){
+        public bool Find(Node<T> node, ref Node<T>[] preds, ref Node<T>[] succs){
             var marked = false;
             var isRetryNeeded = false;
             Node<T> curr = null;
