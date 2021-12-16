@@ -9,6 +9,7 @@ namespace Lab1{
         private readonly SkipListLockFree<int> _target;
         private readonly Thread[] _threads;
         private readonly int _iterations;
+        private readonly object obj = new();
         private readonly Random rand = new();
         public SynchronizedCollection<Node<int>> SavedValue{ get; } = new();
 
@@ -40,10 +41,16 @@ namespace Lab1{
         private void Writer(){
             try{
                 for (var i = 0; i < _iterations; i++){
-                    var random = rand.Next(MAX_VALUE);
-                    var node = new Node<int>(random, i);
-                    SavedValue.Add(node);
-                    _target.Insert(node);
+                    int random1, random2;
+                    lock (obj){
+                        random1 = rand.Next(MAX_VALUE);
+                        random2 = rand.Next(MAX_VALUE);
+                    }
+                    var node = new Node<int>(random1, random2);
+                    var res = _target.Insert(node);
+                    if (res){
+                        SavedValue.Add(node);
+                    }
                 }
             }
             catch (Exception ex){

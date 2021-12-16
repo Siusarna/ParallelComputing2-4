@@ -24,7 +24,7 @@ namespace Lab1{
         }
 
         private void FillInNext(Node<T> node, Node<T>[] succs){
-            for (var level = Config.MinLevel; level <= node.TopLevel; ++level){
+            for (var level = Config.MinLevel; level <= node.TopLevel; level++){
                 var tempSucc = succs[level];
                 node.Next[level] = new MarkedReference<Node<T>>(tempSucc, false);
             }
@@ -53,7 +53,9 @@ namespace Lab1{
             var (succs, preds) = GetPredsAndSuccs();
 
             while (true){
-                Find(node, ref preds, ref succs);
+                if (Find(node, ref preds, ref succs)){
+                    return false;
+                }
                 
                 FillInNext(node, succs);
                 
@@ -72,9 +74,7 @@ namespace Lab1{
             }
         }
 
-        private Node<T> IterateOverAllLevelDown(Node<T> node){
-            var isMarkedInit = false;
-            var succ = node.Next[node.TopLevel].Get(ref isMarkedInit);
+        private Node<T> IterateOverAllLevelDown(ref Node<T> succ, Node<T> node){
             for (var level = node.TopLevel; level > Config.MinLevel; level--){
                 var isMarked = false;
                 succ = node.Next[level].Get(ref isMarked);
@@ -112,8 +112,8 @@ namespace Lab1{
                     return false;
                 }
 
-                var succ = IterateOverAllLevelDown(node);
-
+                Node<T> succ = null;
+                IterateOverAllLevelDown(ref succ, node);
                 var marked = false;
                 succ = node.Next[Config.MinLevel].Get(ref marked);
 
