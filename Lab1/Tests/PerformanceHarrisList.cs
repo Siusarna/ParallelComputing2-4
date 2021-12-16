@@ -5,12 +5,12 @@ namespace Lab1.Tests;
 [TestFixture]
 public class Performance{
     [Test]
-    public void ConcurrentReadWritePerformance(){
+    public void ConcurrentWritePerformance(){
         const int count = 1;
         var times = new int[count];
         for (var i = 0; i < count; i++){
             var list = new HarrisList();
-            var t = new CollectionReadWritePerformanceLinkedList(list, 10, 3, 5);
+            var t = new CollectionWritePerformanceHarrisList(list, 3, 5);
             times[i] = t.Run().Milliseconds;
             PrintLinkedList(list);
             Parallel.ForEach(t.SavedValue, (node) => { list.Remove(node); });

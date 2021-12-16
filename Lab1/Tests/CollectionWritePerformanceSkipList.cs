@@ -4,18 +4,17 @@ using System.Diagnostics;
 using System.Threading;
 
 namespace Lab1{
-    internal sealed class CollectionReadWritePerformanceSkipList{
+    internal sealed class CollectionWritePerformanceSkipList{
         private const int MAX_VALUE = 10000;
         private readonly SkipListLockFree<int> _target;
         private readonly Thread[] _threads;
         private readonly int _iterations;
-        private readonly Random rand = new Random();
-        public SynchronizedCollection<Node<int>> SavedValue{ get; } = new SynchronizedCollection<Node<int>>();
+        private readonly Random rand = new();
+        public SynchronizedCollection<Node<int>> SavedValue{ get; } = new();
 
-        public CollectionReadWritePerformanceSkipList(SkipListLockFree<int> target, int readersCount, int writersCount, int iterations){
+        public CollectionWritePerformanceSkipList(SkipListLockFree<int> target, int writersCount, int iterations){
             _target = target;
             _iterations = iterations;
-            var count = writersCount + readersCount;
             _threads = new Thread[writersCount];
 
             for (var i = 0; i < writersCount; i++){

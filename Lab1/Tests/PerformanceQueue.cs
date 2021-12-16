@@ -5,12 +5,12 @@ namespace Lab1;
 [TestFixture]
 public class PerformanceQueue{
     [Test]
-    public void ConcurrentReadWritePerformance(){
+    public void ConcurrentWritePerformance(){
         const int count = 1;
         var times = new int[count];
         for (var i = 0; i < count; i++){
             var queue = new LockFreeQueue<int>();
-            var t = new CollectionReadWritePerformanceQueue(queue, 10, 2, 5);
+            var t = new CollectionWritePerformanceQueue(queue, 2, 5);
             times[i] = t.Run().Milliseconds;
             PrintQueueForm(queue);
             Parallel.ForEach(t.SavedValue, (el) =>
