@@ -55,7 +55,7 @@ public class HarrisList{
             return null;
         }
 
-        pred.Next.CompareAndExchange(curr, false, rightNext, false);
+        pred.Next.CompareAndExchange(rightNext, false, curr, false);
         return true;
     }
 
